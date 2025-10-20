@@ -83,12 +83,13 @@ void loop() {
   }else if (left || leftmost) {
     // Turn Left
     Serial.println("  Kiri");
-    
+    delay(500);
   }
   else if (right || rightmost) {
     // Turn Right
     Serial.println("  Kanan");
     motorControl(;
+    delay(500);
   }
   
   delay(10);  // Small delay for stability
