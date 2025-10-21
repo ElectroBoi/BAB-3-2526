@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 
-#define HCRx 15
-#define HCTx 16
+#define HCRx 16
+#define HCTx 15
 SoftwareSerial HC05(HCRx, HCTx);
 
 // Motor control pins
@@ -17,8 +17,8 @@ void setup() {
  pinMode(IN3, OUTPUT);
  pinMode(IN2, OUTPUT);
  pinMode(IN1, OUTPUT);
- pinMode(SpeedKiri, OUTPUT);
- pinMode(SpeedKanan, OUTPUT);
+ pinMode(ENA, OUTPUT);
+ pinMode(ENB, OUTPUT);
  Serial.begin(115200);
  HC05.begin(9600);
 }
