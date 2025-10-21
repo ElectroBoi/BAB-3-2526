@@ -26,12 +26,12 @@ NewPing sonarL(TRIGGER_PINL, ECHO_PINL, MAX_DISTANCE);
 NewPing sonarR(TRIGGER_PINR, ECHO_PINR, MAX_DISTANCE);
 int distanceF, distanceR, distanceL, currentOrient;
 void setup() {
- pinMode(kiriMaju, OUTPUT);
- pinMode(kiriMundur, OUTPUT);
- pinMode(kananMaju, OUTPUT);
- pinMode(kananMundur, OUTPUT);
- pinMode(speedKanan, OUTPUT);
- pinMode(speedKiri, OUTPUT);
+ pinMode(IN1, OUTPUT);
+ pinMode(IN2, OUTPUT);
+ pinMode(IN3, OUTPUT);
+ pinMode(IN4, OUTPUT);
+ pinMode(ENA, OUTPUT);
+ pinMode(ENB, OUTPUT);
  Serial.begin(115200);
 }
 void loop() {
