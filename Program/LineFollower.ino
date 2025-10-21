@@ -75,6 +75,7 @@ void loop() {
   if (left && right){
     // stop
     Serial.println("  Stop");
+    motorControl(0,0,0,0,0,0);
     
   }else if (!left && !right) {
     // Forward
