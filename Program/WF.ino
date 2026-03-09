@@ -1,7 +1,5 @@
 #include <NewPing.h>
-#include <elapsedMillis.h>
-elapsedMillis timer1;
-elapsedMillis timer2;
+
 
 // Motor control pins
 #define IN4 7
@@ -18,58 +16,71 @@ elapsedMillis timer2;
 #define ECHO_PINL     9 
 #define TRIGGER_PINR  12 
 #define ECHO_PINR     13  
-#define MAX_DISTANCE 200 
+#define MAX_DISTANCE  200 
 
+// Wall Follower Parameters
+#define MaxFront      10
+#define sideDistace   7
+#define rightSpeed    80
+#define leftSpeed     80
 
 NewPing sonarF(TRIGGER_PINF, ECHO_PINF, MAX_DISTANCE);
 NewPing sonarL(TRIGGER_PINL, ECHO_PINL, MAX_DISTANCE);
 NewPing sonarR(TRIGGER_PINR, ECHO_PINR, MAX_DISTANCE);
+
+
 int distanceF, distanceR, distanceL, currentOrient;
 void setup() {
- pinMode(IN1, OUTPUT);
- pinMode(IN2, OUTPUT);
- pinMode(IN3, OUTPUT);
- pinMode(IN4, OUTPUT);
- pinMode(ENA, OUTPUT);
- pinMode(ENB, OUTPUT);
- Serial.begin(115200);
+  Serial.begin(115200);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(ENA, OUTPUT);
+  pinMode(ENB, OUTPUT);
+ 
 }
+
+
 void loop() {
- distanceF = sonarF.ping_cm();
- distanceL = sonarL.ping_cm();
- distanceR = sonarR.ping_cm();
- if (distanceF >=5) {
- // Maju lurus kalau gak ada halangan
- Serial.println("MAJU");
- motorControl(1, 0, 1, 0, 80, 80);
- } else {
- // Terlalu dekat, mundur dulu
- Serial.println("Halangan di depan, mundur sebentar");
- motorControl( 80, 80);
- delay(300);
- // Stop sebentar
- motorControl();
- delay(2500);
- // Bandingkan kiri dan kanan
- if (distanceL < distanceR) {
- Serial.println("Belok Kiri");
- motorControl(0,1, 1, 0, 80, 80); // Belok kiri
- delay(400);
- motorControl(0, 0, 0, 0, 0, 0);
- delay(500);
- } else {
- Serial.println("Belok kanan");
- }
- // Stop sebentar setelah belok
- motorControl(0, 0, 0, 0, 0, 0);
- delay(500);
- }
+  //Membaca Sensor Ultrasonik Depan
+  distanceF = sonarF.ping_cm();
+  //Membaca Sensor Ultrasonik Kiri (Gunakan apabila menggunakan Logika Left Wall Hugging)
+  distanceL = sonarL.ping_cm();
+  //Membaca Sensor Ultrasonik Kanan (Gunakan apabila menggunakan Logika Right Wall Hugging)
+  //distanceR = sonarR.ping_cm();
+
+  //Logika Left Wall Hugging
+  if(distanceF < MaxFront){
+    //Belok ke Kanan apabila depan Robot terdapat tembok
+    motorControl(1,0,0,0, leftSpeed, rightSpeed);
+  }
+
+  //Ganti variable distanceL ke variable distanceR apabila menggunakan logkia Right Wall Hugging
+  else if (distanceL > sideDistace + 2){
+    //Belok ke kiri untuk mendekati tembok kiri apabila jarak robot terlalu jajuh dari tembok  
+    motorControl(0,0,1,0, leftSpeed, rightSpeed);
+  }
+
+  else if (distanceL < sideDistance - 2){
+    //Belok ke Kanan apabila jarak robot terlalu dekat dengan tembok untuk menjauh
+    motorControl(1,0,0,0, leftSpeed, rightSpeed);
+  }
+
+  else {
+    //Apabila tidak terdeteksi apapun pada decision diatas robot akan maju
+    motorControl(1,0,1,0, leftSpeed, rightSpeed);
+  }
+
+
 }
+
+
 void motorControl(int In1, int In2, int In3, int In4, int SpeedL, int SpeedR){
- digitalWrite(IN1, In1);
- digitalWrite(IN2, In2);
- digitalWrite(IN3, In3);
- digitalWrite(IN4, In4);
- analogWrite(ENA, SpeedL);
- analogWrite(ENB, SpeedR);
+  digitalWrite(IN1, In1);
+  digitalWrite(IN2, In2);
+  digitalWrite(IN3, In3);
+  digitalWrite(IN4, In4);
+  analogWrite(ENA, SpeedL);
+  analogWrite(ENB, SpeedR);
 }
